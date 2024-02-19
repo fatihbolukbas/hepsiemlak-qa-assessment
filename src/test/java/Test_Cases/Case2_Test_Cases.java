@@ -64,7 +64,7 @@ public class Case2_Test_Cases {
 
     @Test(priority =  5)
     // Test to select a county from the dropdown
-    public void countyDropDown() throws {
+    public void countyDropDown() {
         WebElement countyDropdown = actions.countyDropdownButtonAction();
         Assert.assertTrue(countyDropdown.isDisplayed(), "County dropdown is not visible");
         Assert.assertTrue(countyDropdown.isEnabled(), "County dropdown is not enabled");
