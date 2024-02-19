@@ -1,11 +1,12 @@
 package Test_Cases;
 
+
 import Assessment_Cases.Case2_Mobile;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -15,7 +16,6 @@ import java.util.List;
 
 public class Case2_Test_Cases_Mobile {
     WebDriver driver;
-
     Case2_Mobile actions, homePage;
 
     @BeforeTest
@@ -23,9 +23,14 @@ public class Case2_Test_Cases_Mobile {
     // navigates to the home page, and initializes the actions object
     public void beforeTest() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        Dimension dimension = new Dimension(430,932);
-        driver.manage().window().setSize(dimension);
+        // The user agent we want to behave as a mobile device
+        String mobileUserAgent = "Mozilla/5.0 (Linux; Android 10; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.66 Mobile Safari/537.36";
+        // Configure the ChromeDriver and set the user agent to mimic a mobile device
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--user-agent=" + mobileUserAgent);
+
+        driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
 
         homePage = new Case2_Mobile(driver);
         homePage.goTo();
@@ -77,7 +82,7 @@ public class Case2_Test_Cases_Mobile {
 
     @Test(priority = 6)
     // Test to select a county from the dropdown
-    public void countyDropDown() {
+    public void countyDropDown() throws InterruptedException {
         WebElement countyDropdown = actions.countyDropdownButtonAction();
         Assert.assertTrue(countyDropdown.isDisplayed(), "County dropdown is not visible");
         Assert.assertTrue(countyDropdown.isEnabled(), "County dropdown is not enabled");
@@ -92,7 +97,7 @@ public class Case2_Test_Cases_Mobile {
 
     @Test(priority = 7)
     // Test to select room and hall count
-    public void roomAndHall(){
+    public void roomAndHall() throws InterruptedException {
         WebElement roomAndHall = actions.roomAndHallDropdownButtonAction();
         Assert.assertTrue(roomAndHall.isDisplayed(), "Property age dropdown is not visible");
         Assert.assertTrue(roomAndHall.isEnabled(), "Property age dropdown is not enabled");
@@ -101,7 +106,7 @@ public class Case2_Test_Cases_Mobile {
 
     @Test(priority = 8)
     // Test to select room and hall count
-    public void withinHousingEstate(){
+    public void withinHousingEstate() throws InterruptedException {
         WebElement withinHousingEstate = actions.withinHousingEstateDropdownAction();
         Assert.assertTrue(withinHousingEstate.isDisplayed(), "Property age dropdown is not visible");
         Assert.assertTrue(withinHousingEstate.isEnabled(), "Property age dropdown is not enabled");
@@ -138,7 +143,7 @@ public class Case2_Test_Cases_Mobile {
     @Test(priority = 12)
     //Test to assert phone numbers
     public void testPhoneNumberFormat() {
-        List<WebElement> phoneNumbers = actions.findChildPhoneNumberElementsAction();
+        List<WebElement> phoneNumbers = actions.findChildElementsAction();
         for (WebElement phoneNumber : phoneNumbers) {
             String phoneNumberText = phoneNumber.getText().replaceAll("\\s", "");
             Assert.assertEquals(phoneNumberText.length(), 11, "Phone number is not 11 digits: " + phoneNumberText);

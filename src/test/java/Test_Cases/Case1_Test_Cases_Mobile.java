@@ -2,14 +2,15 @@ package Test_Cases;
 
 import Assessment_Cases.Case1_Mobile;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
 
 public class Case1_Test_Cases_Mobile {
     WebDriver driver;
@@ -20,9 +21,14 @@ public class Case1_Test_Cases_Mobile {
     // navigates to the home page, and initializes the actions object
     public void beforeTest() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        Dimension dimension = new Dimension(430,932);
-        driver.manage().window().setSize(dimension);
+        // The user agent we want to behave as a mobile device
+        String mobileUserAgent = "Mozilla/5.0 (Linux; Android 10; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.66 Mobile Safari/537.36";
+        // Configure the ChromeDriver and set the user agent to mimic a mobile device
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--user-agent=" + mobileUserAgent);
+
+        driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
 
         homePage = new Case1_Mobile(driver);
         homePage.goTo();
@@ -63,7 +69,13 @@ public class Case1_Test_Cases_Mobile {
         actions.setShowFilterButton();
     }
 
-    @Test(priority = 5)
+    @Test(priority =  5)
+    // Test to close the cookie notification
+    public void cookieClose() {
+        actions.setCookieClose();
+    }
+
+    @Test(priority = 6)
     // Test to select a city from the dropdown
     public void cityDropdown() throws InterruptedException {
         WebElement cityDropdown = actions.cityDropdownButtonAction();
@@ -72,19 +84,13 @@ public class Case1_Test_Cases_Mobile {
         actions.setCity("İzmir");
     }
 
-    @Test(priority = 6)
+    @Test(priority = 7)
     // Test to select a county from the dropdown
-    public void countyDropDown() {
+    public void countyDropDown() throws InterruptedException {
         WebElement countyDropdown = actions.countyDropdownButtonAction();
         Assert.assertTrue(countyDropdown.isDisplayed(), "County dropdown is not visible");
         Assert.assertTrue(countyDropdown.isEnabled(), "County dropdown is not enabled");
         actions.setCounty("Bornova");
-    }
-
-    @Test(priority =  7)
-    // Test to close the cookie notification
-    public void cookieClose() {
-        actions.setCookieClose();
     }
 
     @Test(priority = 8)
@@ -97,15 +103,6 @@ public class Case1_Test_Cases_Mobile {
     }
 
     @Test(priority = 9)
-    // Test to rerun the "Show Filter" action
-    public void showFilterTestRerun(){
-        WebElement showFilter = actions.showFilterButtonAction();
-        Assert.assertTrue(showFilter.isDisplayed(), "Show filter button is not visible");
-        Assert.assertTrue(showFilter.isEnabled(), "Show filter button is not enabled");
-        actions.setShowFilterButton();
-    }
-
-    @Test(priority = 10)
     // Test to input the minimum price
     public void  minPrice(){
         WebElement minPrice = actions.minPriceInputAction();
@@ -113,7 +110,7 @@ public class Case1_Test_Cases_Mobile {
         actions.setMinPriceInput("1000000");
     }
 
-    @Test(priority = 11)
+    @Test(priority = 10)
     // Test to input the maximum price
     public void maxPrice(){
         WebElement maxPrice = actions.maxPriceInputAction();
@@ -121,22 +118,31 @@ public class Case1_Test_Cases_Mobile {
         actions.setMaxPriceInput("20000000");
     }
 
-    @Test(priority = 12)
+    @Test(priority = 11)
     // Test to select a property age range
-    public void propertyAge(){
+    public void propertyAge() throws InterruptedException {
         WebElement propertyAgeDropdown = actions.propertyAgeAction();
         Assert.assertTrue(propertyAgeDropdown.isDisplayed(), "Property age dropdown is not visible");
         Assert.assertTrue(propertyAgeDropdown.isEnabled(), "Property age dropdown is not enabled");
         actions.setPropertyAge();
     }
 
-    @Test(priority = 13)
+    @Test(priority = 12)
     // Test to click the search button
     public void searchButton() throws InterruptedException {
         WebElement searchButton = actions.searchButtonAction();
         Assert.assertTrue(searchButton.isDisplayed(), "Search button is not visible");
         Assert.assertTrue(searchButton.isEnabled(), "Search button is not enabled");
         actions.setSearchButton();
+    }
+
+    @Test(priority = 13)
+    // Test to verify the visibility and functionality of the "Show Filter" button
+    public void showFilterAgainTest(){
+        WebElement showFilter = actions.showFilterButtonAction();
+        Assert.assertTrue(showFilter.isDisplayed(), "Show filter button is not visible");
+        Assert.assertTrue(showFilter.isEnabled(), "Show filter button is not enabled");
+        actions.setShowFilterButton();
     }
 
     @Test(priority = 14)
@@ -151,17 +157,14 @@ public class Case1_Test_Cases_Mobile {
         String propertyAge3 = actions.propertyAgeTage3Action().getText();
         Assert.assertEquals(propertyAge3,"6-10");
 
-        String priceTag = actions.priceTagAction().getText();
-        Assert.assertEquals(priceTag,"1.000.000 TL - 20.000.000 TL");
+        String minPriceTag = actions.minPriceTagAction().getText();
+        Assert.assertEquals(minPriceTag,"1.000.000 TL");
 
-        String cityTag = actions.cityTagAction().getText();
-        Assert.assertEquals(cityTag,"İzmir");
+        String maxPriceTag = actions.maxPriceTagAction().getText();
+        Assert.assertEquals(maxPriceTag,"20.000.000 TL");
 
-        String countyTag = actions.countyTagAction().getText();
-        Assert.assertEquals(countyTag,"Bornova");
-
-        String categoryTag = actions.categoryTagAction().getText();
-        Assert.assertEquals(categoryTag,"İşyeri");
+        String propertyStatusTag = actions.propertyStatusTagAction().getText();
+        Assert.assertEquals(propertyStatusTag,"Satılık");
     }
 
     @AfterTest
