@@ -148,7 +148,6 @@ public class Case2_Mobile {
         return parentElement.findElements(By.cssSelector("li"));
     }
 
-
     // Navigates to the page
     public void goTo() {
         driver.get("https://www.hepsiemlak.com/");
